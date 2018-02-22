@@ -14,6 +14,7 @@ import cv2
 
 # nwpath es el nombre de la imagen que quiere ser transformada en la nueva imagen
 # res devuelve el nombre de la nueva imagen ya con la manipulacion requerida
+#ajsdafwsfowjfscjwecwcowcdpkw
 def escalaDeGrises(nwpath):
    im=Image.open(nwpath)
    pixels=im.load()
