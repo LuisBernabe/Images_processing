@@ -1,10 +1,5 @@
 
-"""
-Tarea 1
-Nombre: Luis Gerardo Bernabe Gomez
-Correo: luis_berna@ciencias.unam.mx
-No.Cuenta:312225430
-"""
+
 from Tkinter import *
 #from PIL import Image
 from PIL import ImageTk, Image
@@ -143,6 +138,7 @@ def mosaico(nwpath, finura):
             promR=int(math.ceil(promedio(listaR)))
             promG=int(math.ceil(promedio(listaG)))
             promB=int(math.ceil(promedio(listaB)))
+
             #rellena la imagen con el nuevo valor
             for k in range(origeny,yMatriz):
                 for l in range(origenx,xMatriz):
