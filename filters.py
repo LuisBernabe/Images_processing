@@ -9,6 +9,7 @@ from PIL import ImageTk, Image
 from tkFileDialog import *
 import math
 import cv2
+import convolucion
 
 # nwpath es el nombre de la imagen que quiere ser transformada en la nueva imagen
 # res devuelve el nombre de la nueva imagen ya con la manipulacion requerida
@@ -174,10 +175,70 @@ def promedio(lista):
     resu=res//len(lista)
     return resu
 
-"""
+
+def blur(nwpath,tam,xt={}):
+    matrizTres=[[0.0,0.2,0.0],[0.2,0.2,0.2],[0.0,0.2,0.0]]
+    matrizCinco=[[0,0,1,0,0],[0,1,1,1,0],[1,1,1,1,1],[0,1,1,1,0],[0,0,1,0,0]]
+    if tam == 3:
+        convolucion.convol_matriz(nwpath,matrizTres,"Blur_3",1)
+    elif tam ==5:
+        convolucion.convol_matriz(nwpath,matrizCinco,"Blur_5",1/13)
+
+def motionBlur(nwpath,tam,xt={}):
+    matrizNueve=[[1,0,0,0,0,0,0,0,0],[0,1,0,0,0,0,0,0,0],[0,0,1,0,0,0,0,0,0],[0,0,0,1,0,0,0,0,0],
+    [0,0,0,0,1,0,0,0,0],[0,0,0,0,0,1,0,0,0],[0,0,0,0,0,0,1,0,0],[0,0,0,0,0,0,0,1,0],[0,0,0,0,0,0,0,0,1]]
+    matrizTres=[[1,0,0],[0,1,0],[0,0,1]]
+
+    if tam == 3:
+        convolucion.convol_matriz(nwpath,matrizTres,"Motion_Blur_3",1/3)
+    elif tam ==9:
+        convolucion.convol_matriz(nwpath,matrizNueve,"Motion_Blur_9",1/9)
+
+def findEdges(nwpath,orientacion,xt={}):
+    matrizHorizontal=[[0,0,-1,0,0],[0,0,-1,0,0],[0,0,2,0,0],[0,0,0,0,0],[0,0,0,0,0]]
+    matrizVertical=[[0,0,-1,0,0],[0,0,-1,0,0],[0,0,4,0,0],[0,0,-1,0,0],[0,0,-1,0,0]]
+    matrizCuatroCinco=[[-1,0,0,0,0],[0,-2,0,0,0],[0,0,6,0,0],[0,0,0,-2,0],[0,0,0,0,-1]]
+
+    if orientacion == 180:
+        convolucion.convol_matriz(nwpath,matrizHorizontal,"Bordes_Horizontales",1)
+    elif orientacion == 90:
+        convolucion.convol_matriz(nwpath,matrizVertical,"Bordes_Verticales",1)
+    elif orientacion == 45:
+        convolucion.convol_matriz(nwpath,matrizCuatroCinco,"Bordes_45",1)
+
+def sharpen(nwpath,tam,xt={}):
+    matrizTres=[[-1,-1,-1],[-1,-9,-1],[-1,-1,-1]]
+    matrizCinco=[[-1,-1,-1,-1,-1],[-1,2,2,2,-1],[-1,2,8,2,-1],[-1,2,2,2,-1],[-1,-1,-1,-1,-1]]
+    if tam == 3:
+        convolucion.convol_matriz(nwpath,matrizTres,"sharpen_3",1)
+    elif tam ==5:
+        convolucion.convol_matriz(nwpath,matrizCinco,"sharpen_5",1/8)
+
+def emboss(nwpath,tam,xt={}):
+    matrizTres=[[-1,-1,0],[-1,0,1],[0,1,1]]
+    matrizCinco=[[-1,-1,-1,-1,0],[-1,-1,-1,0,-1],[-1,-1,0,-1,-1],[-1,0,-1,-1,-1],[0,-1,-1,-1,-1]]
+    if tam == 3:
+        convolucion.convol_matriz(nwpath,matrizTres,"emboss_3",1)
+    elif tam ==5:
+        convolucion.convol_matriz(nwpath,matrizCinco,"emboss_5",1)
+
+
 def inicio():
     path=raw_input("\n\n\nIngresa el nombre de la imagen que quieres procesar\n")
-    print "Iniciando Escala de Grises"
+    print "Iniciando Blur"
+    blur(path,5,{})
+    print "Blur listo\nIniciando Motion Blur"
+    motionBlur(path,3,{})
+    print "Motion Blur listo\nIniciando Find Edges"
+    findEdges(path,90,{})
+    print "Find Edges listo\nIniciando Sharpen"
+    sharpen(path,5,{})
+    print "Sharpen listo\nIniciando emboss"
+    findEdges(path,5,{})
+    print "Emboss listo"
+
+
+"""    print "Iniciando Escala de Grises"
     escalaDeGrises(path)
     print "Escala de Grises listo\nIniciando Brillo"
     brillo(path,"+",87)
@@ -192,5 +253,10 @@ def inicio():
     print "Mosaico listo"
 """
 
-#inicio()
-brillo("jemma.png",{'constante':-90})
+inicio()
+#brillo("jemma.png",{'constante':-90})
+#escalaDeGrises("av.jpg",{})
+#motionBlur("av.jpg",9,{})
+#findEdges("jemma.png",45,{})
+
+#emboss("aos.jpeg",5,{})
