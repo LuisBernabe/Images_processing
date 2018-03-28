@@ -10,6 +10,10 @@ from tkFileDialog import *
 import math
 import cv2
 import convolucion
+import utils
+
+#f=open("test.html","w")
+
 
 # nwpath es el nombre de la imagen que quiere ser transformada en la nueva imagen
 # res devuelve el nombre de la nueva imagen ya con la manipulacion requerida
@@ -223,6 +227,104 @@ def emboss(nwpath,tam,xt={}):
         convolucion.convol_matriz(nwpath,matrizCinco,"emboss_5",1)
 
 
+def letra(nwpath):
+    global f
+    fin=5
+    im_mos=mosaico(nwpath,{'finura':fin})
+    name=utils.getOnlyImageName(nwpath)
+    f=open(name+'.html','w')
+    f.write('<html> \n <body> \n <H6>')
+    im=Image.open(im_mos)
+
+    pixels=im.load()
+    ancho,alto=im.size
+    i=0
+    j=0
+    while i<alto:
+       while j<ancho:
+           r,g,b=pixels[j,i]
+           f.write(letraColor("M",pixels[j,i]))
+           j+=fin
+       i+=fin
+       j=0
+       f.write('<br/>')
+    f.write('<H6/>\n</body> \n </html>')
+    print ("El archivo es:"+name+".html")
+
+
+
+def letraColor(letra,color):
+    r,g,b=color
+    cadena='<font style="color:rgb({0},{1},{2})">{3}</font>'.format(r,g,b,letra)
+    return cadena
+
+#covierte la imagen llenandole las imagenes con unicamente una letra
+def letraGris(nwpath):
+    im_gris=escalaDeGrises(nwpath)
+    letra(im_gris)
+
+
+#Metodo que cambia la imagen  a escala de grises y de ahi sustituye, dependiendo del rango por un caracter
+def letrasGris(nwpath):
+    global f
+    fin=7
+    im_mos=mosaico(nwpath,{'finura':fin})
+    im_mos_gris=escalaDeGrises(im_mos,{})
+
+    name=utils.getOnlyImageName(nwpath)
+    f=open(name+'_caracter.html','w')
+    f.write('<html> \n <body>\n <p align="center"> \n <H6>')
+    im=Image.open(im_mos_gris)
+
+    pixels=im.load()
+    ancho,alto=im.size
+    i=0
+    j=0
+    while i<alto:
+       while j<ancho:
+           r,g,b=pixels[j,i]
+           if r >= 240:
+               f.write("&nbsp;")
+           elif r>=226:
+               f.write("&nbsp;.&nbsp;")
+           elif r>=210:
+               f.write("+")
+           elif r>=192:
+               f.write("%")
+           elif r>=176:
+               f.write("$")
+           elif r>=160:
+               f.write("2")
+           elif r>=144:
+               f.write("Y")
+           elif r>=128:
+               f.write("0")
+           elif r>=112:
+               f.write("D")
+           elif r>=96:
+               f.write("A")
+           elif r>=80:
+               f.write("U")
+           elif r>=64:
+               f.write("Q")
+           elif r>=48:
+               f.write("#")
+           elif r>=32:
+               f.write("H")
+           elif r>=16:
+               f.write("N")
+           elif r>=0:
+               f.write("M")
+           j+=fin
+       i+=fin
+       j=0
+       f.write('<br/>')
+    f.write('<H6/>\n</body> \n </p>\n </html>')
+    print ("El archivo es:"+name+"_caracter.html")
+
+
+
+
 def inicio():
     path=raw_input("\n\n\nIngresa el nombre de la imagen que quieres procesar\n")
     print "Iniciando Blur"
@@ -253,10 +355,13 @@ def inicio():
     print "Mosaico listo"
 """
 
-inicio()
+#inicio()
 #brillo("jemma.png",{'constante':-90})
 #escalaDeGrises("av.jpg",{})
 #motionBlur("av.jpg",9,{})
 #findEdges("jemma.png",45,{})
 
 #emboss("aos.jpeg",5,{})
+letrasGris("avengers.jpg")
+#mosaico("avengers.jpg",{'finura':3})
+#letraColor("M",(123,255,0))
